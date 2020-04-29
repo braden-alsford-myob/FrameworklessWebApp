@@ -1,38 +1,29 @@
 ﻿using System;
-using System.IO;
-using System.Net;
-using System.Threading;
+using System.Collections.Generic;
 
 namespace FrameworklessWebApp
 {
     class Program
     {
+        private const string Port = "8080";
+        private static readonly string Uri = $"http://localhost:{Port}/";
+
+        
         static void Main(string[] args)
         {
-            var server = new HttpListener();
-            var port = 8080;
-            server.Prefixes.Add($"http://localhost:{port}/");
-            server.Start();
-            Console.WriteLine($"Server listening on port: {port}");
+            var client1 = new Client(
+                "Braden", 
+                22, 
+                new List<string>{"Skiing", "Surfing"});
             
+            var clients = new List<Client>{client1};
             
-            while (true)
-            {
-                var context = server.GetContext();  // Gets the request
-                Console.WriteLine($"{context.Request.HttpMethod} {context.Request.Url}");
-
-                if (context.Request.HttpMethod == "POST")
-                {
-                    Console.WriteLine("Its a post!");
-                    var body = new StreamReader(context.Request.InputStream).ReadToEnd();
-                    Console.WriteLine(body);
-                }
-                
-                var buffer = System.Text.Encoding.UTF8.GetBytes("Hello Braden");
-                context.Response.ContentLength64 = buffer.Length;
-                context.Response.OutputStream.Write(buffer, 0, buffer.Length);  // forces send of response
-            }
-            server.Stop();  // never reached...
+            var clientService = new ClientService(clients);
+            
+            var server = new Server(Uri, clientService);
+            server.Run();
+            
+            Console.WriteLine($"Server listening on port: {Port}");
         }
     }
 }
