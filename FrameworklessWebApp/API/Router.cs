@@ -1,3 +1,4 @@
+using System.IO;
 using System.Linq;
 using System.Net;
 using FrameworklessWebApp.Application;
@@ -39,6 +40,15 @@ namespace FrameworklessWebApp.API
                     var journalEntries = _journalEntryService.GetEntries();
                     return new Response(200, JsonConvert.SerializeObject(journalEntries));
                 }
+                
+                case "POST":
+                    var body = new StreamReader(request.InputStream).ReadToEnd();
+
+                    var newJournalEntry = JsonConvert.DeserializeObject<JournalEntry>(body);
+                    
+                    
+                    _journalEntryService.AddEntry(newJournalEntry);
+                    return new Response(201, "Created");
             }
             
             return new Response(400, "Bad Request 😬");

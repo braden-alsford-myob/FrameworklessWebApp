@@ -7,10 +7,12 @@ namespace FrameworklessWebApp.Application
     public class JournalEntryService
     {
         private readonly List<JournalEntry> _entries;
+        private int _idCount;
 
         public JournalEntryService(List<JournalEntry> entries)
         {
             _entries = entries;
+            _idCount = entries.Max(e => e.Id);
         }
         
 
@@ -22,12 +24,10 @@ namespace FrameworklessWebApp.Application
 
         public void AddEntry(JournalEntry journalEntry)
         {
-            if (!EntryAlreadyExists(journalEntry.Id))
-            {
-                _entries.Add(journalEntry);
-            }
+            _idCount++;
             
-            // todo throw exception if already exists.
+            journalEntry.Id = _idCount;
+            _entries.Add(journalEntry);
         }
         
 
@@ -37,11 +37,6 @@ namespace FrameworklessWebApp.Application
             {
                 _entries.Remove(entry);
             }
-        }
-
-        private bool EntryAlreadyExists(int entryId)
-        {
-            return _entries.Any(entry => entry.Id == entryId);
         }
     }
 }

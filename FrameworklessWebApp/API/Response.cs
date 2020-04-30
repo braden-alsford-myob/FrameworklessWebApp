@@ -10,7 +10,5 @@ namespace FrameworklessWebApp.API
 
         public int StatusCode { get; }
         public string Body { get; }
-        
-        
     }
 }

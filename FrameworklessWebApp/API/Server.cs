@@ -28,20 +28,15 @@ namespace FrameworklessWebApp.API
             {
                 var context = _server.GetContext();
                 Console.WriteLine($"{context.Request.HttpMethod} {context.Request.Url}");
-                ProcessContext(context);
-            }
-        }
-        
-        
-        private void ProcessContext(HttpListenerContext context)
-        {
-            var response = _router.ProcessRequest(context.Request);
+                
+                var response = _router.ProcessRequest(context.Request);
             
-            var responseBuffer = System.Text.Encoding.UTF8.GetBytes(response.Body);
-            context.Response.StatusCode = response.StatusCode;
-            context.Response.ContentType = "application/json";
-            context.Response.ContentLength64 = responseBuffer.Length;
-            context.Response.OutputStream.Write(responseBuffer, 0, responseBuffer.Length);
+                var responseBuffer = System.Text.Encoding.UTF8.GetBytes(response.Body);
+                context.Response.StatusCode = response.StatusCode;
+                context.Response.ContentType = "application/json";
+                context.Response.ContentLength64 = responseBuffer.Length;
+                context.Response.OutputStream.Write(responseBuffer, 0, responseBuffer.Length);
+            }
         }
     }
 }
