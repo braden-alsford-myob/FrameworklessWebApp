@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using FrameworklessWebApp.API;
+using FrameworklessWebApp.Application;
 
 namespace FrameworklessWebApp
 {
@@ -11,19 +13,23 @@ namespace FrameworklessWebApp
         
         static void Main(string[] args)
         {
-            var client1 = new Client(
-                "Braden", 
-                22, 
-                new List<string>{"Skiing", "Surfing"});
+            var initialJournalEntries = new List<JournalEntry>
+            {
+                new JournalEntry(1, DateTime.Now, "This entry went in today!"),
+                new JournalEntry(2, new DateTime(2020, 4, 29), "This one went in yesterday :)")
+            };
             
-            var clients = new List<Client>{client1};
+            var journalEntryService = new JournalEntryService(initialJournalEntries);
             
-            var clientService = new ClientService(clients);
             
-            var server = new Server(Uri, clientService);
-            server.Run();
+            
+            
+            var router = new Router(journalEntryService);
+
+            var server = new Server(Uri, router);
             
             Console.WriteLine($"Server listening on port: {Port}");
+            server.Run();
         }
     }
 }
