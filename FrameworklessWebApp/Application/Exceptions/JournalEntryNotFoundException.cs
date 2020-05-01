@@ -1,6 +1,6 @@
 using System;
 
-namespace FrameworklessWebApp.Application
+namespace FrameworklessWebApp.Application.Exceptions
 {
     public class JournalEntryNotFoundException : Exception
     {

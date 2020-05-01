@@ -7,9 +7,9 @@ namespace FrameworklessWebApp.Application
     {
         public int Id { get; set; }
         
-        public DateTime TimeAdded { get; }
+        public DateTime TimeAdded { get; set; }
         
-        public string Content { get; }
+        public string Content { get; set; }
         
         
         [JsonConstructor]
@@ -17,7 +17,7 @@ namespace FrameworklessWebApp.Application
         {
             TimeAdded = timeAdded;
             Content = content;
-        }        
+        }
         
         
         public JournalEntry(int id, DateTime timeAdded, string content)

@@ -1,6 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
+using FrameworklessWebApp.Application.Exceptions;
 
 namespace FrameworklessWebApp.Application
 {
@@ -48,6 +49,30 @@ namespace FrameworklessWebApp.Application
         {
             var entry = GetEntryById(entryId);
             _entries.Remove(entry);
+        }
+
+
+        public void UpdateEntry(JournalEntry updatedEntry, int id)
+        {
+            ValidateNewJournalEntry(updatedEntry);
+            
+            var entryToUpdate = GetEntryById(id);
+            entryToUpdate.Content = updatedEntry.Content;
+            entryToUpdate.TimeAdded = updatedEntry.TimeAdded;
+        }
+
+
+        private void ValidateNewJournalEntry(JournalEntry entry)
+        {
+            if (entry.Content == "")
+            {
+                throw new MissingJournalEntryAttributesException("Content");
+            }
+            
+            if (entry.TimeAdded == DateTime.MinValue)
+            {
+                throw new MissingJournalEntryAttributesException("DateTime");
+            }
         }
     }
 }
