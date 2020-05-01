@@ -22,21 +22,32 @@ namespace FrameworklessWebApp.Application
         }
         
 
-        public void AddEntry(JournalEntry journalEntry)
+        public int AddEntry(JournalEntry journalEntry)
         {
             _idCount++;
             
             journalEntry.Id = _idCount;
             _entries.Add(journalEntry);
+
+            return _idCount;
+        }
+
+
+        public JournalEntry GetEntryById(int id)
+        {
+            foreach (var entry in _entries.Where(entry => entry.Id == id))
+            {
+                return entry;
+            }
+
+            throw new JournalEntryNotFoundException(id);
         }
         
 
         public void DeleteEntry(int entryId)
         {
-            foreach (var entry in _entries.Where(entry => entry.Id == entryId))
-            {
-                _entries.Remove(entry);
-            }
+            var entry = GetEntryById(entryId);
+            _entries.Remove(entry);
         }
     }
 }

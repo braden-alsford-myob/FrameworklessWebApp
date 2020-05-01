@@ -1,21 +1,21 @@
-using System.IO;
 using System.Linq;
 using System.Net;
-using FrameworklessWebApp.Application;
-using Newtonsoft.Json;
+using FrameworklessWebApp.API.ServiceControllers;
 
 namespace FrameworklessWebApp.API
 {
     public class Router
     {
-        private readonly JournalEntryService _journalEntryService;
-        
+        private readonly GeneralJournalEntryController _generalJournalEntryController;
+        private readonly SpecificJournalEntryController _specificJournalEntryController;
+
         private const string NotesEndPoint = "journalEntries";
 
 
-        public Router(JournalEntryService journalEntryService)
+        public Router(GeneralJournalEntryController generalJournalEntryController, SpecificJournalEntryController specificJournalEntryController)
         {
-            _journalEntryService = journalEntryService;
+            _generalJournalEntryController = generalJournalEntryController;
+            _specificJournalEntryController = specificJournalEntryController;
         }
 
 
@@ -25,33 +25,20 @@ namespace FrameworklessWebApp.API
 
             return parameters[0] switch
             {
-                NotesEndPoint => HandleJournalEntries(request),
+                NotesEndPoint => HandleJournalEntries(request, parameters),
                 _ => new Response(400, "Bad Request 😬")
             };
         }
         
 
-        private Response HandleJournalEntries(HttpListenerRequest request)
+        private Response HandleJournalEntries(HttpListenerRequest request, string[] parameters)
         {
-            switch (request.HttpMethod)
+            if (parameters.Length == 1)
             {
-                case "GET":
-                {
-                    var journalEntries = _journalEntryService.GetEntries();
-                    return new Response(200, JsonConvert.SerializeObject(journalEntries));
-                }
-                
-                case "POST":
-                    var body = new StreamReader(request.InputStream).ReadToEnd();
-
-                    var newJournalEntry = JsonConvert.DeserializeObject<JournalEntry>(body);
-                    
-                    
-                    _journalEntryService.AddEntry(newJournalEntry);
-                    return new Response(201, "Created");
+                return _generalJournalEntryController.GetResponse(request);
             }
             
-            return new Response(400, "Bad Request 😬");
+            return _specificJournalEntryController.GetResponse(request, parameters);
         }
     }
 }

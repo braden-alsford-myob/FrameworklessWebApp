@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using FrameworklessWebApp.API;
+using FrameworklessWebApp.API.ServiceControllers;
 using FrameworklessWebApp.Application;
 
 namespace FrameworklessWebApp
@@ -22,9 +22,11 @@ namespace FrameworklessWebApp
 
             var journalEntryService = new JournalEntryService(initialJournalEntries);
 
+            var generalJournalEntryController = new GeneralJournalEntryController(journalEntryService);
+            var specificJournalEntryController = new SpecificJournalEntryController(journalEntryService);
 
 
-            var router = new Router(journalEntryService);
+            var router = new Router(generalJournalEntryController, specificJournalEntryController);
 
             var server = new Server(Uri, router);
 
