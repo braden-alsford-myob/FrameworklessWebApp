@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using FrameworklessWebApp.API.ServiceControllers;
 
 namespace FrameworklessWebApp.API
@@ -18,7 +19,7 @@ namespace FrameworklessWebApp.API
             _specificJournalEntryController = specificJournalEntryController;
         }
 
-
+        
         public Response ProcessRequest(HttpListenerRequest request)
         {
             var parameters = request.Url.Segments.Skip(1).Select(p => p.Replace("/", "")).ToArray();

@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrameworklessWebApp", "Fram
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{DD4D97EA-88FD-4B45-A023-BC196072B510}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{0FF823AA-3A0D-441D-A918-30344C334A6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{DD4D97EA-88FD-4B45-A023-BC196072B510}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD4D97EA-88FD-4B45-A023-BC196072B510}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD4D97EA-88FD-4B45-A023-BC196072B510}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FF823AA-3A0D-441D-A918-30344C334A6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FF823AA-3A0D-441D-A918-30344C334A6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FF823AA-3A0D-441D-A918-30344C334A6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FF823AA-3A0D-441D-A918-30344C334A6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

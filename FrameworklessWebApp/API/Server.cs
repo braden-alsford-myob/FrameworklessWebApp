@@ -23,33 +23,39 @@ namespace FrameworklessWebApp.API
         }
         
         
-        public void Run()
+        public async Task Run()
         {
             _server.Start();
             
             while (true)
             {
-                Console.WriteLine("Listening...");
+                Console.WriteLine("listening again...");
                 var context = _server.GetContext();
-                
-                Task.Factory.StartNew(() => ProcessContext(context));
+                await ProcessContext(context);
             }
         }
 
-        private void ProcessContext(HttpListenerContext context)
+        private async Task ProcessContext(HttpListenerContext context)
         {
-            Console.WriteLine($"{context.Request.HttpMethod} {context.Request.Url}");
+            await Task.Run(() =>
+            {
+                Console.WriteLine($"{context.Request.HttpMethod} {context.Request.Url}");
+                
+                var response = _router.ProcessRequest(context.Request);
 
-            var response = _router.ProcessRequest(context.Request);
-            
-            var responseBuffer = System.Text.Encoding.UTF8.GetBytes(response.Body);
-            context.Response.StatusCode = response.StatusCode;
-            context.Response.ContentType = "application/json";
-            context.Response.ContentLength64 = responseBuffer.Length;
-            context.Response.OutputStream.Write(responseBuffer, 0, responseBuffer.Length);
-            context.Response.Headers.Add("custom", "hello");
-            
-            Console.WriteLine("Sent response");
+                for (int i = 0; i < 5; i++)
+                {
+                    Console.WriteLine(i);
+                    Thread.Sleep(1000);
+                }
+                
+                var responseBuffer = System.Text.Encoding.UTF8.GetBytes(response.Body);
+                context.Response.StatusCode = response.StatusCode;
+                context.Response.ContentType = "application/json";
+                context.Response.ContentLength64 = responseBuffer.Length;
+                context.Response.OutputStream.Write(responseBuffer, 0, responseBuffer.Length);
+                context.Response.Headers.Add("custom", "hello");
+            });
         }
     }
 }

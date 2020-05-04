@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using FrameworklessWebApp.API;
 using FrameworklessWebApp.API.ServiceControllers;
 using FrameworklessWebApp.Application;
@@ -12,7 +13,7 @@ namespace FrameworklessWebApp
         private static readonly string Uri = $"http://localhost:{Port}/";
 
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var initialJournalEntries = new List<JournalEntry>
             {
@@ -30,8 +31,8 @@ namespace FrameworklessWebApp
 
             var server = new Server(Uri, router);
 
-            Console.WriteLine($"Server listening on port: {Port}");
-            server.Run();
+            Console.WriteLine($"Server listening on port: {Port}"); 
+            await server.Run();
         }
     }
 }
