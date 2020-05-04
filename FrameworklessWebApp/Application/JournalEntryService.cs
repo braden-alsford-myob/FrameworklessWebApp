@@ -64,7 +64,7 @@ namespace FrameworklessWebApp.Application
 
         private void ValidateNewJournalEntry(JournalEntry entry)
         {
-            if (entry.Content == "")
+            if (string.IsNullOrEmpty(entry.Content))
             {
                 throw new MissingJournalEntryAttributesException("Content");
             }

@@ -31,7 +31,7 @@ namespace FrameworklessWebApp.API.ServiceControllers
 
                     var newId = _journalEntryService.AddEntry(newJournalEntry);
                     
-                    return new Response(201, $"'Id':{newId} ");
+                    return new Response(201, $"\"Id\" : {newId}");
             }
 
             return BasicResponseBuilder.GetBadRequest();

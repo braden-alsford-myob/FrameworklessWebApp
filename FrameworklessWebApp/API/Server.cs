@@ -29,7 +29,9 @@ namespace FrameworklessWebApp.API
             
             while (true)
             {
+                Console.WriteLine("Listening...");
                 var context = _server.GetContext();
+                
                 Task.Factory.StartNew(() => ProcessContext(context));
             }
         }
@@ -45,6 +47,9 @@ namespace FrameworklessWebApp.API
             context.Response.ContentType = "application/json";
             context.Response.ContentLength64 = responseBuffer.Length;
             context.Response.OutputStream.Write(responseBuffer, 0, responseBuffer.Length);
+            context.Response.Headers.Add("custom", "hello");
+            
+            Console.WriteLine("Sent response");
         }
     }
 }

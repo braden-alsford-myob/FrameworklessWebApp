@@ -7,6 +7,7 @@ namespace FrameworklessWebApp.API
             StatusCode = statusCode;
             Body = body;
         }
+        
 
         public int StatusCode { get; }
         public string Body { get; }
