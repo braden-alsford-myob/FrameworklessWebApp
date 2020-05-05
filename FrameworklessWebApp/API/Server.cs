@@ -29,7 +29,6 @@ namespace FrameworklessWebApp.API
             
             while (true)
             {
-                Console.WriteLine("listening again...");
                 var context = _server.GetContext();
                 await ProcessContext(context);
             }
@@ -43,12 +42,6 @@ namespace FrameworklessWebApp.API
                 
                 var response = _router.ProcessRequest(context.Request);
 
-                for (int i = 0; i < 5; i++)
-                {
-                    Console.WriteLine(i);
-                    Thread.Sleep(1000);
-                }
-                
                 var responseBuffer = System.Text.Encoding.UTF8.GetBytes(response.Body);
                 context.Response.StatusCode = response.StatusCode;
                 context.Response.ContentType = "application/json";
