@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace FrameworklessWebApp.Application
+namespace FrameworklessWebApp.Application.Models
 {
     public class JournalEntry
     {

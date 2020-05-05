@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using FrameworklessWebApp.API;
 using FrameworklessWebApp.API.ServiceControllers;
 using FrameworklessWebApp.Application;
+using FrameworklessWebApp.Application.Models;
+using FrameworklessWebApp.Application.Services;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
@@ -27,24 +29,24 @@ namespace TestProject1
         [SetUp]
         public void Setup()
         {
-            _initialJournalEntries = new List<JournalEntry>
-            {
-                new JournalEntry(1, new DateTime(2020, 4, 28), "Dear Journal..."),
-                new JournalEntry(2, new DateTime(2020, 4, 29), "Dear Journal... x2")
-            };
-
-            var journalEntryService = new JournalEntryService(_initialJournalEntries);
-
-            var generalJournalEntryController = new GeneralJournalEntryController(journalEntryService);
-            var specificJournalEntryController = new SpecificJournalEntryController(journalEntryService);
-            var router = new Router(generalJournalEntryController, specificJournalEntryController);
-
-            _server = new Server(ServerUri, router);
-            
-            _serverThread = new Thread(_server.Run);
-            _serverThread.Start();
-            
-            _client = new HttpClient();
+            // _initialJournalEntries = new List<JournalEntry>
+            // {
+            //     new JournalEntry(1, new DateTime(2020, 4, 28), "Dear Journal..."),
+            //     new JournalEntry(2, new DateTime(2020, 4, 29), "Dear Journal... x2")
+            // };
+            //
+            // var journalEntryService = new JournalEntryService(_initialJournalEntries);
+            //
+            // var generalJournalEntryController = new GeneralJournalEntryController(journalEntryService);
+            // var specificJournalEntryController = new SpecificJournalEntryController(journalEntryService);
+            // var router = new Router(generalJournalEntryController, specificJournalEntryController);
+            //
+            // _server = new Server(ServerUri, router);
+            //
+            // _serverThread = new Thread(_server.Run);
+            // _serverThread.Start();
+            //
+            // _client = new HttpClient();
         }
         
 

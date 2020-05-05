@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FrameworklessWebApp.Application.Exceptions;
+using FrameworklessWebApp.Application.Models;
 
-namespace FrameworklessWebApp.Application
+namespace FrameworklessWebApp.Application.Services
 {
     public class JournalEntryService
     {

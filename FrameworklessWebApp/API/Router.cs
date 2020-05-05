@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using FrameworklessWebApp.API.ServiceControllers;
 
 namespace FrameworklessWebApp.API
@@ -9,14 +8,20 @@ namespace FrameworklessWebApp.API
     {
         private readonly GeneralJournalEntryController _generalJournalEntryController;
         private readonly SpecificJournalEntryController _specificJournalEntryController;
+        private readonly ClientsController _clientsController;
 
-        private const string NotesEndPoint = "journalEntries";
+        private const string JournalEntriesEndPoint = "journalEntries";
+        private const string ClientsEndPoint = "clients";
 
 
-        public Router(GeneralJournalEntryController generalJournalEntryController, SpecificJournalEntryController specificJournalEntryController)
+        public Router(
+            GeneralJournalEntryController generalJournalEntryController, 
+            SpecificJournalEntryController specificJournalEntryController,
+            ClientsController clientsController)
         {
             _generalJournalEntryController = generalJournalEntryController;
             _specificJournalEntryController = specificJournalEntryController;
+            _clientsController = clientsController;
         }
 
         
@@ -26,7 +31,8 @@ namespace FrameworklessWebApp.API
 
             return parameters[0] switch
             {
-                NotesEndPoint => HandleJournalEntries(request, parameters),
+                JournalEntriesEndPoint => HandleJournalEntries(request, parameters),
+                ClientsEndPoint => _clientsController.GetResponse(request),
                 _ => new Response(400, "Bad Request 😬")
             };
         }

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FrameworklessWebApp.API;
 using FrameworklessWebApp.API.ServiceControllers;
-using FrameworklessWebApp.Application;
+using FrameworklessWebApp.Application.Models;
+using FrameworklessWebApp.Application.Services;
+using FrameworklessWebApp.Database;
 
 namespace FrameworklessWebApp
 {
@@ -25,9 +27,18 @@ namespace FrameworklessWebApp
 
             var generalJournalEntryController = new GeneralJournalEntryController(journalEntryService);
             var specificJournalEntryController = new SpecificJournalEntryController(journalEntryService);
+            
+            var retriever = new StubRetriever();
+            
+            var clientsService = new ClientService(retriever);
+            
+            var clientsController = new ClientsController(clientsService);
 
 
-            var router = new Router(generalJournalEntryController, specificJournalEntryController);
+            var router = new Router(
+                generalJournalEntryController, 
+                specificJournalEntryController, 
+                clientsController);
 
             var server = new Server(Uri, router);
 

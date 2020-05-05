@@ -3,6 +3,8 @@ using System.IO;
 using System.Net;
 using FrameworklessWebApp.Application;
 using FrameworklessWebApp.Application.Exceptions;
+using FrameworklessWebApp.Application.Models;
+using FrameworklessWebApp.Application.Services;
 using Newtonsoft.Json;
 
 namespace FrameworklessWebApp.API.ServiceControllers
