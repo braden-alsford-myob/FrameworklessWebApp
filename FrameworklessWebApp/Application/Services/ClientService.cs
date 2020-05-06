@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using FrameworklessWebApp.Application.Exceptions;
-using FrameworklessWebApp.Database;
+using FrameworklessWebApp.Application.Models;
+using FrameworklessWebApp.Data;
 
 namespace FrameworklessWebApp.Application.Services
 {
@@ -9,29 +11,57 @@ namespace FrameworklessWebApp.Application.Services
     {
         private readonly IRetriever _retriever;
 
+        
         public ClientService(IRetriever retriever)
         {
             _retriever = retriever;
         }
+        
 
         public List<Client> GetClients()
         {
             return _retriever.GetClients();
         }
+        
+        
+        public Client GetClientByUsername(string username)
+        {
+            foreach (var client in GetClients().Where(client => client.Username == username))
+            {
+                return client;
+            }
 
+            throw new ClientNotFoundException(username);
+        }
+
+        
         public void AddClient(Client client)
         {
-            if (ClientNameTaken(client))
+            if (ClientUsernameTaken(client.Username))
             {
-                throw new NameTakenException(client.FirstName, client.LastName);
+                throw new NameTakenException(client.Username);
             }
             
             _retriever.AddClient(client);
         }
 
-        private bool ClientNameTaken(Client newClient)
+        
+        public void DeleteClient(string username)
         {
-            return GetClients().Any(client => client.FirstName == newClient.FirstName && client.LastName == newClient.LastName);
+            var clientToDelete = GetClientByUsername(username);
+            _retriever.DeleteClient(clientToDelete);
+        }
+
+
+        public void UpdateClient(string oldUsername, Client newClient)
+        {
+            _retriever.UpdateClient(oldUsername, newClient);
+        }
+
+
+        private bool ClientUsernameTaken(string username)
+        {
+            return GetClients().Any(client => client.Username == username);
         }
     }
 }

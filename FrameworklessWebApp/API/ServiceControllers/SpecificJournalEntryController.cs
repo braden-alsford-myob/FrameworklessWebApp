@@ -24,27 +24,29 @@ namespace FrameworklessWebApp.API.ServiceControllers
         {
             int entryId;
 
-            if (!int.TryParse(parameters[1], out entryId))
+            if (!int.TryParse(parameters[3], out entryId))
             {
                 return BasicResponseBuilder.GetBadRequest();
             }
+
+            var clientUsername = parameters[1];
 
             try
             {
                 switch (request.HttpMethod)
                 {
                     case "GET":
-                        var journalEntry = _journalEntryService.GetEntryById(entryId);
+                        var journalEntry = _journalEntryService.GetEntryById(clientUsername, entryId);
                         return new Response(200, JsonConvert.SerializeObject(journalEntry));
 
                     case "PUT":
                         var body = new StreamReader(request.InputStream).ReadToEnd();
                         var updatedJournal = JsonConvert.DeserializeObject<JournalEntry>(body);
-                        _journalEntryService.UpdateEntry(updatedJournal, entryId);
+                        _journalEntryService.UpdateEntry(clientUsername, entryId, updatedJournal);
                         return new Response(200, "Updated");
 
                     case "DELETE":
-                        _journalEntryService.DeleteEntry(entryId);
+                        _journalEntryService.DeleteEntry(clientUsername, entryId);
                         return new Response(200, "Deleted");
                 }
             }

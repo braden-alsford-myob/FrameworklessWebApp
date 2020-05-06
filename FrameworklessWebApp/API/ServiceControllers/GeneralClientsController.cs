@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Net;
-using FrameworklessWebApp.Application;
 using FrameworklessWebApp.Application.Exceptions;
 using FrameworklessWebApp.Application.Models;
 using FrameworklessWebApp.Application.Services;
@@ -9,15 +8,15 @@ using Newtonsoft.Json;
 
 namespace FrameworklessWebApp.API.ServiceControllers
 {
-    public class ClientsController
+    public class GeneralClientsController
     {
         private readonly ClientService _clientService;
 
-        public ClientsController(ClientService clientService)
+        public GeneralClientsController(ClientService clientService)
         {
             _clientService = clientService;
         }
-
+        
         public Response GetResponse(HttpListenerRequest request)
         {
             try
@@ -25,15 +24,17 @@ namespace FrameworklessWebApp.API.ServiceControllers
                 switch (request.HttpMethod)
                 {
                     case "GET":
-                        var journalEntries = _clientService.GetClients();
+                        var clients = _clientService.GetClients();
 
-                        return new Response(200, JsonConvert.SerializeObject(journalEntries));
+                        return new Response(200, JsonConvert.SerializeObject(clients));
+
+
                     case "POST":
                         var body = new StreamReader(request.InputStream).ReadToEnd();
                         var newClient = JsonConvert.DeserializeObject<Client>(body);
 
                         _clientService.AddClient(newClient);
-                        
+
                         return new Response(201, "Created");
                 }
 
@@ -44,7 +45,6 @@ namespace FrameworklessWebApp.API.ServiceControllers
                 Console.WriteLine(e.Message);
                 return new Response(400, e.Message);
             }
-            
         }
     }
 }

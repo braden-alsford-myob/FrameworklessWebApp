@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using FrameworklessWebApp.API;
 using FrameworklessWebApp.API.ServiceControllers;
-using FrameworklessWebApp.Application.Models;
 using FrameworklessWebApp.Application.Services;
-using FrameworklessWebApp.Database;
+using FrameworklessWebApp.Data;
 
 namespace FrameworklessWebApp
 {
@@ -14,31 +12,25 @@ namespace FrameworklessWebApp
         private const string Port = "8080";
         private static readonly string Uri = $"http://localhost:{Port}/";
 
-
+        
         static async Task Main(string[] args)
         {
-            var initialJournalEntries = new List<JournalEntry>
-            {
-                new JournalEntry(1, DateTime.Now, "This entry went in today!"),
-                new JournalEntry(2, new DateTime(2020, 4, 29), "This one went in yesterday :)")
-            };
+            var retriever = new StubRetriever();
 
-            var journalEntryService = new JournalEntryService(initialJournalEntries);
+            var clientsService = new ClientService(retriever);
+            var journalEntryService = new JournalEntryService(retriever);
 
+            var generalClientsController = new GeneralClientsController(clientsService);
+            var specificClientsController = new SpecificClientsController(clientsService);
             var generalJournalEntryController = new GeneralJournalEntryController(journalEntryService);
             var specificJournalEntryController = new SpecificJournalEntryController(journalEntryService);
             
-            var retriever = new StubRetriever();
-            
-            var clientsService = new ClientService(retriever);
-            
-            var clientsController = new ClientsController(clientsService);
-
 
             var router = new Router(
                 generalJournalEntryController, 
                 specificJournalEntryController, 
-                clientsController);
+                generalClientsController,
+                specificClientsController);
 
             var server = new Server(Uri, router);
 

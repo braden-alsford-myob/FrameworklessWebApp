@@ -4,13 +4,13 @@ namespace FrameworklessWebApp.Application.Exceptions
 {
     public class NameTakenException : Exception
     {
-        public NameTakenException(string firstName, string lastName): base(FormatMessage(firstName, lastName))
+        public NameTakenException(string username): base(FormatMessage(username))
         {
         }
 
-        private static string FormatMessage(string firstName, string lastName)
+        private static string FormatMessage(string username)
         {
-            return $"{firstName} {lastName} is already taken!";
+            return $"{username} is already taken!";
         }
     }
 }

@@ -3,41 +3,49 @@ using System.Collections.Generic;
 using System.Linq;
 using FrameworklessWebApp.Application.Exceptions;
 using FrameworklessWebApp.Application.Models;
+using FrameworklessWebApp.Data;
 
 namespace FrameworklessWebApp.Application.Services
 {
     public class JournalEntryService
     {
-        private readonly List<JournalEntry> _entries;
-        private int _idCount;
+        private readonly IRetriever _retriever;
 
-        public JournalEntryService(List<JournalEntry> entries)
+
+        public JournalEntryService(IRetriever retriever)
         {
-            _entries = entries;
-            _idCount = entries.Max(e => e.Id);
+            _retriever = retriever;
         }
         
 
-        public List<JournalEntry> GetEntries()
+        public List<JournalEntry> GetEntries(string username)
         {
-            return _entries;
+            var entries = _retriever.GetJournalEntries(username);
+            if (entries.Count == 0)
+            {
+                throw new ClientNotFoundException(username);
+            }
+
+            return entries;
         }
         
 
-        public int AddEntry(JournalEntry journalEntry)
+        public int AddEntry(string username, JournalEntry journalEntry)
         {
-            _idCount++;
+            var entries = GetEntries(username);
+            var id = GetNextId(entries);
             
-            journalEntry.Id = _idCount;
-            _entries.Add(journalEntry);
+            journalEntry.Id = id;
+            
+            _retriever.AddJournalEntry(username, journalEntry);
 
-            return _idCount;
+            return id;
         }
 
 
-        public JournalEntry GetEntryById(int id)
+        public JournalEntry GetEntryById(string username, int id)
         {
-            foreach (var entry in _entries.Where(entry => entry.Id == id))
+            foreach (var entry in GetEntries(username).Where(entry => entry.Id == id))
             {
                 return entry;
             }
@@ -46,20 +54,29 @@ namespace FrameworklessWebApp.Application.Services
         }
         
 
-        public void DeleteEntry(int entryId)
+        public void DeleteEntry(string username, int entryId)
         {
-            var entry = GetEntryById(entryId);
-            _entries.Remove(entry);
+            var entry = GetEntryById(username, entryId);
+            _retriever.DeleteJournalEntry(username, entry);
         }
 
 
-        public void UpdateEntry(JournalEntry updatedEntry, int id)
+        public void UpdateEntry(string username, int entryId, JournalEntry updatedEntry)
         {
             ValidateNewJournalEntry(updatedEntry);
             
-            var entryToUpdate = GetEntryById(id);
+            var entryToUpdate = GetEntryById(username, entryId);
             entryToUpdate.Content = updatedEntry.Content;
             entryToUpdate.TimeAdded = updatedEntry.TimeAdded;
+            
+            _retriever.UpdateJournalEntry(username, entryToUpdate);
+        }
+
+        private int GetNextId(List<JournalEntry> entries)
+        {
+            var currentMaxId = entries.Max(e => e.Id);
+            
+            return currentMaxId + 1;
         }
 
 

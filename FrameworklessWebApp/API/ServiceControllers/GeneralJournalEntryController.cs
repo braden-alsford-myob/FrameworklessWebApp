@@ -1,6 +1,5 @@
 using System.IO;
 using System.Net;
-using FrameworklessWebApp.Application;
 using FrameworklessWebApp.Application.Models;
 using FrameworklessWebApp.Application.Services;
 using Newtonsoft.Json;
@@ -18,12 +17,14 @@ namespace FrameworklessWebApp.API.ServiceControllers
         }
         
         
-        public Response GetResponse(HttpListenerRequest request)
+        public Response GetResponse(HttpListenerRequest request, string[] parameters)
         {
+            var clientUsername = parameters[1];
+
             switch (request.HttpMethod)
             {
                 case "GET":
-                    var journalEntries = _journalEntryService.GetEntries();
+                    var journalEntries = _journalEntryService.GetEntries(clientUsername);
                     
                     return new Response(200, JsonConvert.SerializeObject(journalEntries));
                 
@@ -31,7 +32,7 @@ namespace FrameworklessWebApp.API.ServiceControllers
                     var body = new StreamReader(request.InputStream).ReadToEnd();
                     var newJournalEntry = JsonConvert.DeserializeObject<JournalEntry>(body);
 
-                    var newId = _journalEntryService.AddEntry(newJournalEntry);
+                    var newId = _journalEntryService.AddEntry(clientUsername, newJournalEntry);
                     
                     return new Response(201, $"\"Id\" : {newId}");
             }
