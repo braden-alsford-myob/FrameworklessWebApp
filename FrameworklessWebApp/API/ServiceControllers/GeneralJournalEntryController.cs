@@ -23,12 +23,12 @@ namespace FrameworklessWebApp.API.ServiceControllers
         
         public Response GetResponse(HttpListenerRequest request, string[] parameters)
         {
-            var clientUsername = parameters[1];
+            var clientId = int.Parse(parameters[1]);
 
             switch (request.HttpMethod)
             {
                 case "GET":
-                    var journalEntries = _journalEntryService.GetEntries(clientUsername);
+                    var journalEntries = _journalEntryService.GetEntries(clientId);
 
                     var journalEntryViewModels =
                         journalEntries.Select(JournalEntryViewModel.ConvertToViewModel).ToList();
@@ -40,7 +40,7 @@ namespace FrameworklessWebApp.API.ServiceControllers
                     var newJournalEntryVm = JsonConvert.DeserializeObject<JournalEntryViewModel>(body);
                     var newJournalEntry = JournalEntry.ConvertToJournalEntry(newJournalEntryVm);
                     
-                    var newId = _journalEntryService.AddEntry(clientUsername, newJournalEntry);
+                    var newId = _journalEntryService.AddEntry(clientId, newJournalEntry);
                     
                     return new Response(201, $"\"Id\" : {newId}");
             }

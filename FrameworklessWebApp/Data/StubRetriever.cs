@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using FrameworklessWebApp.Models;
@@ -33,20 +32,19 @@ namespace FrameworklessWebApp.Data
         }
 
         
-        public void UpdateClient(string oldUsername, Client newClient)
+        public void UpdateClient(int id, Client newClient)
         {
-            foreach (var client in _clients.Where(client => client.Username == oldUsername))
+            foreach (var client in _clients.Where(client => client.Id == id))
             {
                 client.FirstName = newClient.FirstName;
                 client.LastName = newClient.LastName;
-                client.Username = newClient.Username;
             }
         }
 
 
-        public List<JournalEntry> GetJournalEntries(string username)
+        public List<JournalEntry> GetJournalEntries(int id)
         {
-            foreach (var client in _clients.Where(client => client.Username == username))
+            foreach (var client in _clients.Where(client => client.Id == id))
             {
                 return client.JournalEntries;
             }
@@ -55,26 +53,26 @@ namespace FrameworklessWebApp.Data
         }
 
         
-        public void AddJournalEntry(string username, JournalEntry entry)
+        public void AddJournalEntry(int id, JournalEntry entry)
         {
-            foreach (var client in _clients.Where(client => client.Username == username))
+            foreach (var client in _clients.Where(client => client.Id == id))
             {
                 client.JournalEntries.Add(entry);
             }
         }
 
-        public void DeleteJournalEntry(string username, JournalEntry entry)
+        public void DeleteJournalEntry(int id, JournalEntry entry)
         {
-            foreach (var client in _clients.Where(client => client.Username == username))
+            foreach (var client in _clients.Where(client => client.Id == id))
             {
                 client.JournalEntries.Remove(entry);
             }
         }
 
         
-        public void UpdateJournalEntry(string username, JournalEntry updatedEntry)
+        public void UpdateJournalEntry(int id, JournalEntry updatedEntry)
         {
-            foreach (var client in _clients.Where(client => client.Username == username))
+            foreach (var client in _clients.Where(client => client.Id == id))
             {
                 for (var i = 0; i < client.JournalEntries.Count; i++)
                 {

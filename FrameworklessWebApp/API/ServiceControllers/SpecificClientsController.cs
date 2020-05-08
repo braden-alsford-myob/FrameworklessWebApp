@@ -25,12 +25,12 @@ namespace FrameworklessWebApp.API.ServiceControllers
         {
             try
             {
-                var username = parameters[1];
+                var clientId = int.Parse(parameters[1]);
 
                 switch (request.HttpMethod)
                 {
                     case "GET":
-                        var client = _clientService.GetClientByUsername(username);
+                        var client = _clientService.GetClientById(clientId);
                         var clientVm = ClientViewModel.ConvertToViewModel(client);
                         
                         var responseBody = JsonConvert.SerializeObject(clientVm, new JsonApiSerializerSettings());
@@ -42,12 +42,12 @@ namespace FrameworklessWebApp.API.ServiceControllers
                         var updatedClientVm = JsonConvert.DeserializeObject<ClientViewModel>(body);
                         var updatedClient = Client.ConvertToClient(updatedClientVm);
 
-                        _clientService.UpdateClient(username, updatedClient);
+                        _clientService.UpdateClient(clientId, updatedClient);
                         
                         return new Response(200, "Updated");
 
                     case "DELETE":
-                        _clientService.DeleteClient(username);
+                        _clientService.DeleteClient(clientId);
                         return new Response(200, "Deleted");
                 }
 

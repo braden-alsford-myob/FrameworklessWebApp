@@ -8,10 +8,10 @@ namespace FrameworklessWebApp.Data
         List<Client> GetClients();
         void AddClient(Client client);
         void DeleteClient(Client client);
-        void UpdateClient(string oldUsername, Client newClient);
-        List<JournalEntry> GetJournalEntries(string username);
-        void AddJournalEntry(string username, JournalEntry entry);
-        void DeleteJournalEntry(string username, JournalEntry entry);
-        void UpdateJournalEntry(string username, JournalEntry updatedEntry);
+        void UpdateClient(int id, Client newClient);
+        List<JournalEntry> GetJournalEntries(int id);
+        void AddJournalEntry(int id, JournalEntry entry);
+        void DeleteJournalEntry(int id, JournalEntry entry);
+        void UpdateJournalEntry(int id, JournalEntry updatedEntry);
     }
 }

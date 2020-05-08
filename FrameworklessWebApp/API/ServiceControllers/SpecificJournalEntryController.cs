@@ -29,14 +29,14 @@ namespace FrameworklessWebApp.API.ServiceControllers
                 return BasicResponseBuilder.GetBadRequest();
             }
 
-            var clientUsername = parameters[1];
+            var clientId = int.Parse(parameters[1]);
 
             try
             {
                 switch (request.HttpMethod)
                 {
                     case "GET":
-                        var journalEntry = _journalEntryService.GetEntryById(clientUsername, entryId);
+                        var journalEntry = _journalEntryService.GetEntryById(clientId, entryId);
 
                         var journalEntryVm = JournalEntryViewModel.ConvertToViewModel(journalEntry);
                         
@@ -49,11 +49,11 @@ namespace FrameworklessWebApp.API.ServiceControllers
                         var body = new StreamReader(request.InputStream).ReadToEnd();
                         var updatedJournalVm = JsonConvert.DeserializeObject<JournalEntryViewModel>(body);
                         var updatedJournal = JournalEntry.ConvertToJournalEntry(updatedJournalVm);
-                        _journalEntryService.UpdateEntry(clientUsername, entryId, updatedJournal);
+                        _journalEntryService.UpdateEntry(clientId, entryId, updatedJournal);
                         return new Response(200, "Updated");
 
                     case "DELETE":
-                        _journalEntryService.DeleteEntry(clientUsername, entryId);
+                        _journalEntryService.DeleteEntry(clientId, entryId);
                         return new Response(200, "Deleted");
                 }
             }

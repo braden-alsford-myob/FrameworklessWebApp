@@ -33,24 +33,27 @@ namespace FrameworklessWebApp.API.ServiceControllers
 
                         var clientViewModels = clients.Select(ClientViewModel.ConvertToViewModel).ToList();
 
-                        return new Response(200, JsonConvert.SerializeObject(clientViewModels, new JsonApiSerializerSettings()));
+                        return new Response(200,
+                            JsonConvert.SerializeObject(clientViewModels, new JsonApiSerializerSettings()));
 
 
                     case "POST":
                         var body = new StreamReader(request.InputStream).ReadToEnd();
                         var clientViewModel = JsonConvert.DeserializeObject<ClientViewModel>(body);
 
-                        _clientService.AddClient(Client.ConvertToClient(clientViewModel));
+                        var id = _clientService.AddClient(Client.ConvertToClient(clientViewModel));
 
-                        return new Response(201, "Created");
+                        var idVm = new IdViewModel{Id = id};
+                        
+                        return new Response(201, JsonConvert.SerializeObject(idVm, new JsonApiSerializerSettings()));
                 }
 
                 return BasicResponseBuilder.GetBadRequest();
             }
-            catch (NameTakenException e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return new Response(400, e.Message);
+                return new Response(500, "todo");
             }
         }
     }

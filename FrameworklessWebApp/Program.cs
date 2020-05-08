@@ -43,7 +43,7 @@ namespace FrameworklessWebApp
 
         private static List<Client> GetStubbedClients()
         {
-            var client1 = new Client("bradenalsford", "Braden", "Alsford")
+            var client1 = new Client("Braden", "Alsford")
             {
                 JournalEntries = new List<JournalEntry>
                 {

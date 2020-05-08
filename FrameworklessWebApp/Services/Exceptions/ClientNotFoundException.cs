@@ -4,14 +4,14 @@ namespace FrameworklessWebApp.Services.Exceptions
 {
     public class ClientNotFoundException : Exception
     {
-        public ClientNotFoundException(string username) : base(FormatMessage(username))
+        public ClientNotFoundException(int id) : base(FormatMessage(id))
         {
             
         }
 
-        private static string FormatMessage(string username)
+        private static string FormatMessage(int id)
         {
-            return $"No client with the username '{username}' was found.";
+            return $"No client with the id '{id}' was found.";
         }
     }
 }

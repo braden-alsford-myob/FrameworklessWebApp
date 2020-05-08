@@ -18,58 +18,57 @@ namespace FrameworklessWebApp.Services
         }
         
 
-        public List<JournalEntry> GetEntries(string username)
+        public List<JournalEntry> GetEntries(int clientId)
         {
-            var entries = _retriever.GetJournalEntries(username);
+            var entries = _retriever.GetJournalEntries(clientId);
             if (entries.Count == 0)
             {
-                throw new ClientNotFoundException(username);
+                throw new ClientNotFoundException(clientId);
             }
 
             return entries;
         }
         
 
-        public int AddEntry(string username, JournalEntry journalEntry)
+        public int AddEntry(int clientId, JournalEntry journalEntry)
         {
-            var entries = GetEntries(username);
+            var entries = GetEntries(clientId);
             var id = GetNextId(entries);
-            
             journalEntry.Id = id;
             
-            _retriever.AddJournalEntry(username, journalEntry);
+            _retriever.AddJournalEntry(clientId, journalEntry);
 
             return id;
         }
 
 
-        public JournalEntry GetEntryById(string username, int id)
+        public JournalEntry GetEntryById(int clientId, int entryId)
         {
-            foreach (var entry in GetEntries(username).Where(entry => entry.Id == id))
+            foreach (var entry in GetEntries(clientId).Where(entry => entry.Id == entryId))
             {
                 return entry;
             }
 
-            throw new JournalEntryNotFoundException(id);
+            throw new JournalEntryNotFoundException(entryId);
         }
         
 
-        public void DeleteEntry(string username, int entryId)
+        public void DeleteEntry(int clientId, int entryId)
         {
-            var entry = GetEntryById(username, entryId);
-            _retriever.DeleteJournalEntry(username, entry);
+            var entry = GetEntryById(clientId, entryId);
+            _retriever.DeleteJournalEntry(clientId, entry);
         }
 
 
-        public void UpdateEntry(string username, int entryId, JournalEntry updatedEntry)
+        public void UpdateEntry(int clientId, int entryId, JournalEntry updatedEntry)
         {
             ValidateNewJournalEntry(updatedEntry);
             
-            var entryToUpdate = GetEntryById(username, entryId);
+            var entryToUpdate = GetEntryById(clientId, entryId);
             entryToUpdate.Content = updatedEntry.Content;
             entryToUpdate.TimeAdded = updatedEntry.TimeAdded;
             
-            _retriever.UpdateJournalEntry(username, entryToUpdate);
+            _retriever.UpdateJournalEntry(clientId, entryToUpdate);
         }
 
         private int GetNextId(List<JournalEntry> entries)

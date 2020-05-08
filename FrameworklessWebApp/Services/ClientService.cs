@@ -23,44 +23,46 @@ namespace FrameworklessWebApp.Services
         }
         
         
-        public Client GetClientByUsername(string username)
+        public Client GetClientById(int id)
         {
-            foreach (var client in GetClients().Where(client => client.Username == username))
+            foreach (var client in GetClients().Where(client => client.Id == id))
             {
                 return client;
             }
 
-            throw new ClientNotFoundException(username);
+            throw new ClientNotFoundException(id);
         }
 
         
-        public void AddClient(Client client)
+        public int AddClient(Client client)
         {
-            if (ClientUsernameTaken(client.Username))
-            {
-                throw new NameTakenException(client.Username);
-            }
+            var clients = GetClients();
+            var id = GetNextId(clients);
+            client.Id = id;
             
             _retriever.AddClient(client);
+
+            return id;
         }
 
         
-        public void DeleteClient(string username)
+        public void DeleteClient(int id)
         {
-            var clientToDelete = GetClientByUsername(username);
+            var clientToDelete = GetClientById(id);
             _retriever.DeleteClient(clientToDelete);
         }
 
 
-        public void UpdateClient(string oldUsername, Client newClient)
+        public void UpdateClient(int id, Client newClient)
         {
-            _retriever.UpdateClient(oldUsername, newClient);
+            _retriever.UpdateClient(id, newClient);
         }
-
-
-        private bool ClientUsernameTaken(string username)
+        
+        private int GetNextId(List<Client> clients)
         {
-            return GetClients().Any(client => client.Username == username);
+            var currentMaxId = clients.Max(c => c.Id);
+            
+            return currentMaxId + 1;
         }
     }
 }
