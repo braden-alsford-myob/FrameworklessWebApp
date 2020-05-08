@@ -1,10 +1,14 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Runtime.InteropServices;
+using FrameworklessWebApp.API.ViewModels;
 using FrameworklessWebApp.Application;
 using FrameworklessWebApp.Application.Exceptions;
 using FrameworklessWebApp.Application.Models;
 using FrameworklessWebApp.Application.Services;
+using JsonApiSerializer;
+using JsonApiSerializer.JsonApi;
 using Newtonsoft.Json;
 
 namespace FrameworklessWebApp.API.ServiceControllers
@@ -37,11 +41,18 @@ namespace FrameworklessWebApp.API.ServiceControllers
                 {
                     case "GET":
                         var journalEntry = _journalEntryService.GetEntryById(clientUsername, entryId);
-                        return new Response(200, JsonConvert.SerializeObject(journalEntry));
+
+                        var journalEntryVm = JournalEntryViewModel.ConvertToViewModel(journalEntry);
+                        
+                        var jsonBody =
+                            JsonConvert.SerializeObject(journalEntryVm, new JsonApiSerializerSettings());
+                        
+                        return new Response(200, jsonBody);
 
                     case "PUT":
                         var body = new StreamReader(request.InputStream).ReadToEnd();
-                        var updatedJournal = JsonConvert.DeserializeObject<JournalEntry>(body);
+                        var updatedJournalVm = JsonConvert.DeserializeObject<JournalEntryViewModel>(body);
+                        var updatedJournal = JournalEntry.ConvertToJournalEntry(updatedJournalVm);
                         _journalEntryService.UpdateEntry(clientUsername, entryId, updatedJournal);
                         return new Response(200, "Updated");
 

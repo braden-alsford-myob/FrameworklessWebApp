@@ -1,9 +1,15 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
+using FrameworklessWebApp.API.ViewModels;
 using FrameworklessWebApp.Application.Exceptions;
 using FrameworklessWebApp.Application.Models;
 using FrameworklessWebApp.Application.Services;
+using JsonApiSerializer;
+using JsonApiSerializer.JsonApi;
 using Newtonsoft.Json;
 
 namespace FrameworklessWebApp.API.ServiceControllers
@@ -26,14 +32,16 @@ namespace FrameworklessWebApp.API.ServiceControllers
                     case "GET":
                         var clients = _clientService.GetClients();
 
-                        return new Response(200, JsonConvert.SerializeObject(clients));
+                        var clientViewModels = clients.Select(ClientViewModel.ConvertToViewModel).ToList();
+
+                        return new Response(200, JsonConvert.SerializeObject(clientViewModels, new JsonApiSerializerSettings()));
 
 
                     case "POST":
                         var body = new StreamReader(request.InputStream).ReadToEnd();
-                        var newClient = JsonConvert.DeserializeObject<Client>(body);
+                        var clientViewModel = JsonConvert.DeserializeObject<ClientViewModel>(body);
 
-                        _clientService.AddClient(newClient);
+                        _clientService.AddClient(Client.ConvertToClient(clientViewModel));
 
                         return new Response(201, "Created");
                 }

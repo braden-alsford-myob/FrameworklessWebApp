@@ -1,7 +1,12 @@
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
+using FrameworklessWebApp.API.ViewModels;
 using FrameworklessWebApp.Application.Models;
 using FrameworklessWebApp.Application.Services;
+using JsonApiSerializer;
+using JsonApiSerializer.JsonApi;
 using Newtonsoft.Json;
 
 namespace FrameworklessWebApp.API.ServiceControllers
@@ -25,13 +30,17 @@ namespace FrameworklessWebApp.API.ServiceControllers
             {
                 case "GET":
                     var journalEntries = _journalEntryService.GetEntries(clientUsername);
-                    
-                    return new Response(200, JsonConvert.SerializeObject(journalEntries));
+
+                    var journalEntryViewModels =
+                        journalEntries.Select(JournalEntryViewModel.ConvertToViewModel).ToList();
+
+                    return new Response(200, JsonConvert.SerializeObject(journalEntryViewModels, new JsonApiSerializerSettings()));
                 
                 case "POST":
                     var body = new StreamReader(request.InputStream).ReadToEnd();
-                    var newJournalEntry = JsonConvert.DeserializeObject<JournalEntry>(body);
-
+                    var newJournalEntryVm = JsonConvert.DeserializeObject<JournalEntryViewModel>(body);
+                    var newJournalEntry = JournalEntry.ConvertToJournalEntry(newJournalEntryVm);
+                    
                     var newId = _journalEntryService.AddEntry(clientUsername, newJournalEntry);
                     
                     return new Response(201, $"\"Id\" : {newId}");

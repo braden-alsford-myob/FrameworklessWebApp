@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FrameworklessWebApp.API;
 using FrameworklessWebApp.API.ServiceControllers;
+using FrameworklessWebApp.Application.Models;
 using FrameworklessWebApp.Application.Services;
 using FrameworklessWebApp.Data;
 
@@ -15,7 +17,7 @@ namespace FrameworklessWebApp
         
         static async Task Main(string[] args)
         {
-            var retriever = new StubRetriever();
+            var retriever = new StubRetriever(GetStubbedClients());
 
             var clientsService = new ClientService(retriever);
             var journalEntryService = new JournalEntryService(retriever);
@@ -36,6 +38,20 @@ namespace FrameworklessWebApp
 
             Console.WriteLine($"Server listening on port: {Port}"); 
             await server.Run();
+        }
+        
+
+        private static List<Client> GetStubbedClients()
+        {
+            var client1 = new Client("bradenalsford", "Braden", "Alsford")
+            {
+                JournalEntries = new List<JournalEntry>
+                {
+                    new JournalEntry(new DateTime(2020, 12, 1), "Braden's first entry")
+                }
+            };
+
+            return new List<Client> { client1 };
         }
     }
 }

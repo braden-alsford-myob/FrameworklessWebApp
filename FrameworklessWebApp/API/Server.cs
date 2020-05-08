@@ -44,10 +44,9 @@ namespace FrameworklessWebApp.API
 
                 var responseBuffer = System.Text.Encoding.UTF8.GetBytes(response.Body);
                 context.Response.StatusCode = response.StatusCode;
-                context.Response.ContentType = "application/json";
+                context.Response.ContentType = "application/vnd.api+json";
                 context.Response.ContentLength64 = responseBuffer.Length;
                 context.Response.OutputStream.Write(responseBuffer, 0, responseBuffer.Length);
-                context.Response.Headers.Add("custom", "hello");
             });
         }
     }

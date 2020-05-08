@@ -7,19 +7,11 @@ namespace FrameworklessWebApp.Data
 {
     public class StubRetriever : IRetriever
     {
-        private List<Client> _clients;
+        private readonly List<Client> _clients;
 
-        public StubRetriever()
+        public StubRetriever(List<Client> clients)
         {
-            var client1 = new Client("bradenalsford", "Braden", "Alsford")
-            {
-                JournalEntries = new List<JournalEntry>
-                {
-                    new JournalEntry(new DateTime(2020, 12, 1), "Braden's first entry")
-                }
-            };
-
-            _clients = new List<Client> { client1 };
+            _clients = clients;
         }
         
         

@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using FrameworklessWebApp.API.ViewModels;
 using FrameworklessWebApp.Application.Exceptions;
 using FrameworklessWebApp.Application.Models;
 using FrameworklessWebApp.Application.Services;
+using JsonApiSerializer;
+using JsonApiSerializer.JsonApi;
 using Newtonsoft.Json;
 
 namespace FrameworklessWebApp.API.ServiceControllers
@@ -29,13 +32,19 @@ namespace FrameworklessWebApp.API.ServiceControllers
                 {
                     case "GET":
                         var client = _clientService.GetClientByUsername(username);
+                        var clientVm = ClientViewModel.ConvertToViewModel(client);
                         
-                        return new Response(200, JsonConvert.SerializeObject(client));
+                        var responseBody = JsonConvert.SerializeObject(clientVm, new JsonApiSerializerSettings());
+
+                        return new Response(200, responseBody);
                     
                     case "PUT":
                         var body = new StreamReader(request.InputStream).ReadToEnd();
-                        var updatedClient = JsonConvert.DeserializeObject<Client>(body);
+                        var updatedClientVm = JsonConvert.DeserializeObject<ClientViewModel>(body);
+                        var updatedClient = Client.ConvertToClient(updatedClientVm);
+
                         _clientService.UpdateClient(username, updatedClient);
+                        
                         return new Response(200, "Updated");
 
                     case "DELETE":
