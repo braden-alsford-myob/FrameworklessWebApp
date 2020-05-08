@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using FrameworklessWebApp.Application.Models;
+using FrameworklessWebApp.Models;
 
 namespace FrameworklessWebApp.Data
 {

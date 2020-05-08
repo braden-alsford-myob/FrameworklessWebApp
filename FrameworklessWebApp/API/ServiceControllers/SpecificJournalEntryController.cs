@@ -1,14 +1,10 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Runtime.InteropServices;
-using FrameworklessWebApp.API.ViewModels;
-using FrameworklessWebApp.Application;
-using FrameworklessWebApp.Application.Exceptions;
-using FrameworklessWebApp.Application.Models;
-using FrameworklessWebApp.Application.Services;
+using FrameworklessWebApp.Models;
+using FrameworklessWebApp.Services;
+using FrameworklessWebApp.Services.Exceptions;
 using JsonApiSerializer;
-using JsonApiSerializer.JsonApi;
 using Newtonsoft.Json;
 
 namespace FrameworklessWebApp.API.ServiceControllers

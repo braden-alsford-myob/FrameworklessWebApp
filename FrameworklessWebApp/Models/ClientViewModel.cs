@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using FrameworklessWebApp.Application.Models;
 
-namespace FrameworklessWebApp.API.ViewModels
+namespace FrameworklessWebApp.Models
 {
     public class ClientViewModel
     {

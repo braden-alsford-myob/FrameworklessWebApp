@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FrameworklessWebApp.API;
 using FrameworklessWebApp.API.ServiceControllers;
-using FrameworklessWebApp.Application.Models;
-using FrameworklessWebApp.Application.Services;
 using FrameworklessWebApp.Data;
+using FrameworklessWebApp.Models;
+using FrameworklessWebApp.Services;
 
 namespace FrameworklessWebApp
 {

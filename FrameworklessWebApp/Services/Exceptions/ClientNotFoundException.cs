@@ -1,6 +1,6 @@
 using System;
 
-namespace FrameworklessWebApp.Application.Exceptions
+namespace FrameworklessWebApp.Services.Exceptions
 {
     public class ClientNotFoundException : Exception
     {

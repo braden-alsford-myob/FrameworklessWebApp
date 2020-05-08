@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
-using FrameworklessWebApp.Application.Exceptions;
-using FrameworklessWebApp.Application.Models;
 using FrameworklessWebApp.Data;
+using FrameworklessWebApp.Models;
+using FrameworklessWebApp.Services.Exceptions;
 
-namespace FrameworklessWebApp.Application.Services
+namespace FrameworklessWebApp.Services
 {
     public class ClientService
     {

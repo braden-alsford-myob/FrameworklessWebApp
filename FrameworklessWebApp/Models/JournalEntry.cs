@@ -1,9 +1,7 @@
 using System;
-using FrameworklessWebApp.API.ViewModels;
-using JsonApiSerializer.JsonApi;
 using Newtonsoft.Json;
 
-namespace FrameworklessWebApp.Application.Models
+namespace FrameworklessWebApp.Models
 {
     public class JournalEntry
     {
