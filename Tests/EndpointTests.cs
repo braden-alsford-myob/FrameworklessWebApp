@@ -29,7 +29,7 @@ namespace TestProject1
         [SetUp]
         public void Setup()
         {
-            var client1 = new Client("bradenalsford", "Braden", "Alsford")
+            var client1 = new Client("Braden", "Alsford")
             {
                 JournalEntries = new List<JournalEntry>
                 {

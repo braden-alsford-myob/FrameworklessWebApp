@@ -17,7 +17,10 @@ namespace FrameworklessWebApp
         
         static async Task Main(string[] args)
         {
-            var retriever = new StubRetriever(GetStubbedClients());
+            // var retriever = new StubRetriever(GetStubbedClients());
+
+            var retriever = new DynamoRetriever();
+            
 
             var clientsService = new ClientService(retriever);
             var journalEntryService = new JournalEntryService(retriever);
@@ -36,7 +39,7 @@ namespace FrameworklessWebApp
 
             var server = new Server(Uri, router);
 
-            Console.WriteLine($"Server listening on port: {Port}"); 
+            Console.WriteLine($"\n\nServer listening on port: {Port}"); 
             await server.Run();
         }
         

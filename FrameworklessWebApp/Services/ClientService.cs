@@ -25,7 +25,7 @@ namespace FrameworklessWebApp.Services
         
         public Client GetClientById(int id)
         {
-            foreach (var client in GetClients().Where(client => client.Id == id))
+            foreach (var client in GetClients().Where(client => client.ClientID == id))
             {
                 return client;
             }
@@ -38,7 +38,7 @@ namespace FrameworklessWebApp.Services
         {
             var clients = GetClients();
             var id = GetNextId(clients);
-            client.Id = id;
+            client.ClientID = id;
             
             _retriever.AddClient(client);
 
@@ -60,8 +60,12 @@ namespace FrameworklessWebApp.Services
         
         private int GetNextId(List<Client> clients)
         {
-            var currentMaxId = clients.Max(c => c.Id);
+            if (clients.Count == 0)
+            {
+                return 1;
+            }
             
+            var currentMaxId = clients.Max(c => c.ClientID);
             return currentMaxId + 1;
         }
     }

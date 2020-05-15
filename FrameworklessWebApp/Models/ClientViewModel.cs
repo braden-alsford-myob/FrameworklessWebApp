@@ -14,7 +14,7 @@ namespace FrameworklessWebApp.Models
         {
             return new ClientViewModel
             {
-                Id = client.Id,
+                Id = client.ClientID,
                 FirstName = client.FirstName,
                 LastName = client.LastName,
                 JournalEntries = client.JournalEntries

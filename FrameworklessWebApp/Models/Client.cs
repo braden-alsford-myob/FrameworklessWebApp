@@ -1,28 +1,48 @@
 using System.Collections.Generic;
+using Amazon.DynamoDBv2.DataModel;
 using Newtonsoft.Json;
 
 namespace FrameworklessWebApp.Models
 {
+    [DynamoDBTable("Clients")]
     public class Client
     {
-        public int Id { get; set; }
+        [DynamoDBHashKey]
+        public int ClientID { get; set; }
+        
+        [DynamoDBProperty]
         public string FirstName { get; set; }
+        
+        [DynamoDBProperty]
         public string LastName { get; set; }
+        
+        [DynamoDBProperty("Journals")]
         public List<JournalEntry> JournalEntries { get; set; }
 
         [JsonConstructor]
+        public Client(int clientId, string firstName, string lastName, List<JournalEntry> journalEntries)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            ClientID = clientId;
+            JournalEntries = journalEntries;
+        }
+
         public Client(string firstName, string lastName)
         {
             FirstName = firstName;
             LastName = lastName;
-            Id = 0;
+            ClientID = 0;
         }
+        
+        public Client() {}
+
 
         public static Client ConvertToClient(ClientViewModel clientVm)
         {
             return new Client(clientVm.FirstName, clientVm.LastName)
             {
-                Id = clientVm.Id,
+                ClientID = clientVm.Id,
                 JournalEntries = clientVm.JournalEntries
             };
         }

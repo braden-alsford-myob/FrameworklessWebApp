@@ -21,10 +21,12 @@ namespace FrameworklessWebApp.Services
         public List<JournalEntry> GetEntries(int clientId)
         {
             var entries = _retriever.GetJournalEntries(clientId);
-            if (entries.Count == 0)
-            {
-                throw new ClientNotFoundException(clientId);
-            }
+            
+            // TODO fix this up.
+            // if (entries.Count == 0)
+            // {
+            //     throw new ClientNotFoundException(clientId);
+            // }
 
             return entries;
         }
@@ -73,6 +75,8 @@ namespace FrameworklessWebApp.Services
 
         private int GetNextId(List<JournalEntry> entries)
         {
+            if (entries.Count == 0) return 1;
+            
             var currentMaxId = entries.Max(e => e.Id);
             
             return currentMaxId + 1;

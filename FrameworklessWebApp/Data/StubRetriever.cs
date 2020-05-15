@@ -34,7 +34,7 @@ namespace FrameworklessWebApp.Data
         
         public void UpdateClient(int id, Client newClient)
         {
-            foreach (var client in _clients.Where(client => client.Id == id))
+            foreach (var client in _clients.Where(client => client.ClientID == id))
             {
                 client.FirstName = newClient.FirstName;
                 client.LastName = newClient.LastName;
@@ -44,7 +44,7 @@ namespace FrameworklessWebApp.Data
 
         public List<JournalEntry> GetJournalEntries(int id)
         {
-            foreach (var client in _clients.Where(client => client.Id == id))
+            foreach (var client in _clients.Where(client => client.ClientID == id))
             {
                 return client.JournalEntries;
             }
@@ -55,7 +55,7 @@ namespace FrameworklessWebApp.Data
         
         public void AddJournalEntry(int id, JournalEntry entry)
         {
-            foreach (var client in _clients.Where(client => client.Id == id))
+            foreach (var client in _clients.Where(client => client.ClientID == id))
             {
                 client.JournalEntries.Add(entry);
             }
@@ -63,7 +63,7 @@ namespace FrameworklessWebApp.Data
 
         public void DeleteJournalEntry(int id, JournalEntry entry)
         {
-            foreach (var client in _clients.Where(client => client.Id == id))
+            foreach (var client in _clients.Where(client => client.ClientID == id))
             {
                 client.JournalEntries.Remove(entry);
             }
@@ -72,7 +72,7 @@ namespace FrameworklessWebApp.Data
         
         public void UpdateJournalEntry(int id, JournalEntry updatedEntry)
         {
-            foreach (var client in _clients.Where(client => client.Id == id))
+            foreach (var client in _clients.Where(client => client.ClientID == id))
             {
                 for (var i = 0; i < client.JournalEntries.Count; i++)
                 {
