@@ -5,7 +5,8 @@ namespace FrameworklessWebApp.Models
     public class JournalEntryViewModel
     {
         public int Id { get; set; }
-        public DateTime TimeAdded { get; set; }
+        public int ClientId { get; set; }    
+        public DateTime Date { get; set; }
         public string Content { get; set; }
 
         
@@ -14,7 +15,8 @@ namespace FrameworklessWebApp.Models
             return new JournalEntryViewModel
             {
                 Id = entry.Id,
-                TimeAdded = entry.TimeAdded,
+                ClientId = entry.ClientId,
+                Date = entry.Date,
                 Content = entry.Content
             };
         }

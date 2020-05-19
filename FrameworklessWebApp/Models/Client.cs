@@ -16,7 +16,7 @@ namespace FrameworklessWebApp.Models
         [DynamoDBProperty]
         public string LastName { get; set; }
         
-        [DynamoDBProperty("Journals")]
+        [DynamoDBProperty]
         public List<JournalEntry> JournalEntries { get; set; }
 
         [JsonConstructor]

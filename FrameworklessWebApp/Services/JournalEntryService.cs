@@ -28,37 +28,32 @@ namespace FrameworklessWebApp.Services
             //     throw new ClientNotFoundException(clientId);
             // }
 
-            return entries;
+            return entries.Result;
         }
         
 
-        public int AddEntry(int clientId, JournalEntry journalEntry)
+        public string AddEntry(int clientId, JournalEntry journalEntry)
         {
             var entries = GetEntries(clientId);
-            var id = GetNextId(entries);
-            journalEntry.Id = id;
+            journalEntry.Id = GetNextId(entries);
+            journalEntry.ClientId = clientId;
             
-            _retriever.AddJournalEntry(clientId, journalEntry);
+            _retriever.AddJournalEntryAsync(journalEntry);
 
-            return id;
+            return "ah, maybe finish this..";
         }
 
 
         public JournalEntry GetEntryById(int clientId, int entryId)
         {
-            foreach (var entry in GetEntries(clientId).Where(entry => entry.Id == entryId))
-            {
-                return entry;
-            }
-
-            throw new JournalEntryNotFoundException(entryId);
+            return _retriever.GetJournalEntryAsync(clientId, entryId);
         }
         
 
         public void DeleteEntry(int clientId, int entryId)
         {
             var entry = GetEntryById(clientId, entryId);
-            _retriever.DeleteJournalEntry(clientId, entry);
+            _retriever.DeleteJournalEntryAsync(clientId, entry);
         }
 
 
@@ -68,9 +63,9 @@ namespace FrameworklessWebApp.Services
             
             var entryToUpdate = GetEntryById(clientId, entryId);
             entryToUpdate.Content = updatedEntry.Content;
-            entryToUpdate.TimeAdded = updatedEntry.TimeAdded;
+            entryToUpdate.Date = updatedEntry.Date;
             
-            _retriever.UpdateJournalEntry(clientId, entryToUpdate);
+            _retriever.UpdateJournalEntryAsync(clientId, entryToUpdate);
         }
 
         private int GetNextId(List<JournalEntry> entries)
@@ -78,8 +73,9 @@ namespace FrameworklessWebApp.Services
             if (entries.Count == 0) return 1;
             
             var currentMaxId = entries.Max(e => e.Id);
+            var nextId = currentMaxId + 1;
             
-            return currentMaxId + 1;
+            return nextId;
         }
 
 
@@ -90,7 +86,7 @@ namespace FrameworklessWebApp.Services
                 throw new MissingJournalEntryAttributesException("Content");
             }
             
-            if (entry.TimeAdded == DateTime.MinValue)
+            if (entry.Date == DateTime.MinValue)
             {
                 throw new MissingJournalEntryAttributesException("DateTime");
             }

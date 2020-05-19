@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
@@ -15,8 +15,9 @@ namespace FrameworklessWebApp.Data
     {
         private readonly AmazonDynamoDBClient _client;
         private readonly DynamoDBContext _context;
+
+        private readonly Table _journalEntryTable;
         
-        private readonly string _tableName;
         private readonly string _journalTableName;
         private readonly string _clientTableName;
         
@@ -33,24 +34,23 @@ namespace FrameworklessWebApp.Data
             catch (AmazonServiceException e) { Console.WriteLine(e.Message); }
             catch (Exception e) { Console.WriteLine(e.Message); }
             
-            _tableName = "JournalManager";
             _clientTableName = "Clients";
             _journalTableName = "Journals";
+            
+            _journalEntryTable = Table.LoadTable(_client, _journalTableName);
         }
-
-        public List<Client> GetClients()
+        
+        public async Task<List<Client>> GetClientsAsync()
         {
-            // var clients = _context.ScanAsync<Client>(new List<ScanCondition>());
-
             var request = new ScanRequest
             {
                 TableName = _clientTableName
             };
             
-            var response = Task.Run(() => _client.ScanAsync(request));
+            var response =  await _client.ScanAsync(request);
             
             var clients = new List<Client>();
-            foreach (var item in response.Result.Items)
+            foreach (var item in response.Items)
             {
                 clients.Add(new Client
                 {
@@ -70,18 +70,18 @@ namespace FrameworklessWebApp.Data
         }
         
 
-        public void AddClient(Client client)
+        public async Task AddClientAsync(Client client)
         {
-            _context.SaveAsync(client);
+            await _context.SaveAsync(client);
         }
         
 
-        public void DeleteClient(Client client)
+        public async Task DeleteClientAsync(Client client)
         {
-            _context.DeleteAsync<Client>(client.ClientID);
+            await _context.DeleteAsync<Client>(client.ClientID);
         }
 
-        public void UpdateClient(int id, Client newClient)
+        public async Task UpdateClientAsync(int id, Client newClient)
         {
             var oldClient = GetClient(id);
 
@@ -89,90 +89,82 @@ namespace FrameworklessWebApp.Data
             oldClient.LastName = newClient.LastName;
             oldClient.JournalEntries = newClient.JournalEntries;
 
-            _context.SaveAsync(oldClient);
+            await _context.SaveAsync(oldClient);
         }
+        
 
-        public List<JournalEntry> GetJournalEntries(int id)
+        public async Task<List<JournalEntry>> GetJournalEntries(int id)
         {
-            var request = new QueryRequest()
+            var table = Table.LoadTable(_client, _journalTableName);
+            var filter = new QueryFilter("Id", QueryOperator.Equal, id.ToString());
+            var search = table.Query(filter);
+            
+            var documentSet = new List<Document>();
+            do
             {
-                TableName = _journalTableName,
-                KeyConditionExpression = "ClientID = :v_ClientID",
-                ExpressionAttributeValues = new Dictionary<string, AttributeValue> {
-                    {
-                        ":v_ClientID", new AttributeValue { N =  id.ToString() }
-                    }},
-                ConsistentRead = true
-            };
-            var response = Task.Run(() =>_client.QueryAsync(request));
+                documentSet = await search.GetNextSetAsync();
+                
+            } while (!search.IsDone);
 
-            var entries = new List<JournalEntry>();
-            foreach (var item in response.Result.Items)
+
+            var journalEntries = new List<JournalEntry>();
+
+            foreach (var document in documentSet)
             {
-                entries.Add(new JournalEntry
+                var rangeKey = document["Date"].ToString().Split("$");
+                
+                journalEntries.Add(new JournalEntry
                 (
-                    int.Parse(item["ClientID"].N),
-                    ConvertFromUnixTimestamp(double.Parse(item["Date"].N)),
-                    item["Content"].S
+                     int.Parse(rangeKey[1]), 
+                     int.Parse(document["Id"]),
+                     ConvertFromUnixTimestamp(double.Parse(rangeKey[0])),
+                     document["Content"]
                 ));
             }
 
-            return entries;
+            return journalEntries;
         }
 
-        public void AddJournalEntry(int id, JournalEntry entry)
+        
+        public async Task AddJournalEntryAsync(JournalEntry entry)
         {
-            var request = new PutItemRequest
-            {
-                TableName = _journalTableName,
-                Item = new Dictionary<string, AttributeValue>
-                {
-                    { "ClientID", new AttributeValue {
-                        N = id.ToString()
-                    }},
-                    { "Date", new AttributeValue
-                    {
-                        N = ConvertToUnixTimestamp(entry.TimeAdded.Date).ToString(CultureInfo.InvariantCulture)
-                    }},
-                    { "Content", new AttributeValue
-                    {
-                        S = entry.Content
-                    }}
-                }
-            };
+            var dateNumber = ConvertToUnixTimestamp(entry.Date);
             
-            var response = Task.Run(() =>_client.PutItemAsync(request));
-        }
-
-        public void DeleteJournalEntry(int id, JournalEntry entry)
-        {
-            var request = new DeleteItemRequest
+            var journalEntry = new Document
             {
-                TableName = _clientTableName,
-                Key = new Dictionary<string, AttributeValue>
-                {
-                    { "ClientID", new AttributeValue {
-                        N = id.ToString()
-                    }},
-                    {"Date", new AttributeValue
-                    {
-                        N = ConvertToUnixTimestamp(entry.TimeAdded.Date).ToString(CultureInfo.InvariantCulture)
-                    }}
-                }
+                ["Id"] = entry.ClientId.ToString(),
+                ["Date"] = dateNumber + "$" + entry.Id,
+                ["Content"] = entry.Content
             };
 
-            var response = Task.Run(() => _client.DeleteItemAsync(request));
+            await _journalEntryTable.PutItemAsync(journalEntry);
         }
 
-        public void UpdateJournalEntry(int id, JournalEntry updatedEntry)
+        public async Task DeleteJournalEntryAsync(int clientId, JournalEntry entry)
         {
-            throw new System.NotImplementedException();
+            var rangeKey = ConvertToUnixTimestamp(entry.Date) + "$" + entry.Id;
+            await _journalEntryTable.DeleteItemAsync(clientId.ToString(), rangeKey);
         }
-        
-        
-        
-        
-        
+
+        public async Task UpdateJournalEntryAsync(int clientId, JournalEntry updatedEntry)
+        {
+            await DeleteJournalEntryAsync(clientId, updatedEntry);
+            await AddJournalEntryAsync(updatedEntry);
+        }
+
+        public JournalEntry GetJournalEntryAsync(int clientId, int entryId)
+        {
+            var entries = GetJournalEntries(clientId).Result;
+
+            foreach (var entry in entries.Where(entry => entry.Id == entryId))
+            {
+                return entry;
+            }
+
+            return null;
+        }
+
+
         private static DateTime ConvertFromUnixTimestamp(double timestamp)
         {
             var origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);

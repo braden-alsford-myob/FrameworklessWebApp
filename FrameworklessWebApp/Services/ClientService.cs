@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FrameworklessWebApp.Data;
 using FrameworklessWebApp.Models;
 using FrameworklessWebApp.Services.Exceptions;
@@ -19,7 +20,7 @@ namespace FrameworklessWebApp.Services
 
         public List<Client> GetClients()
         {
-            return _retriever.GetClients();
+            return _retriever.GetClientsAsync().Result;
         }
         
         
@@ -40,7 +41,7 @@ namespace FrameworklessWebApp.Services
             var id = GetNextId(clients);
             client.ClientID = id;
             
-            _retriever.AddClient(client);
+            _retriever.AddClientAsync(client);
 
             return id;
         }
@@ -49,13 +50,13 @@ namespace FrameworklessWebApp.Services
         public void DeleteClient(int id)
         {
             var clientToDelete = GetClientById(id);
-            _retriever.DeleteClient(clientToDelete);
+            _retriever.DeleteClientAsync(clientToDelete);
         }
 
 
         public void UpdateClient(int id, Client newClient)
         {
-            _retriever.UpdateClient(id, newClient);
+            _retriever.UpdateClientAsync(id, newClient);
         }
         
         private int GetNextId(List<Client> clients)
