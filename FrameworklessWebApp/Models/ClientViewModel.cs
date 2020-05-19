@@ -7,8 +7,6 @@ namespace FrameworklessWebApp.Models
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public List<JournalEntry> JournalEntries { get; set; }
-
 
         public static ClientViewModel ConvertToViewModel(Client client)
         {
@@ -16,8 +14,7 @@ namespace FrameworklessWebApp.Models
             {
                 Id = client.ClientID,
                 FirstName = client.FirstName,
-                LastName = client.LastName,
-                JournalEntries = client.JournalEntries
+                LastName = client.LastName
             };
         }
     }

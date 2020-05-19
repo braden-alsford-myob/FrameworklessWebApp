@@ -20,4 +20,8 @@
       <ProjectReference Include="..\FrameworklessWebApp\FrameworklessWebApp.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Unit" />
+    </ItemGroup>
+
 </Project>

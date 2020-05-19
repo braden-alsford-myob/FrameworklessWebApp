@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using FrameworklessWebApp.API;
 using FrameworklessWebApp.API.ServiceControllers;
-using FrameworklessWebApp.Application;
 using FrameworklessWebApp.Data;
 using FrameworklessWebApp.Models;
 using FrameworklessWebApp.Services;
@@ -21,6 +20,7 @@ namespace TestProject1
         private const string ServerUri = "http://localhost:8081/";
 
         private List<Client> _clients;
+        private List<JournalEntry> _journalEntries;
         
         private static HttpClient _client;
         private Server _server;
@@ -29,21 +29,25 @@ namespace TestProject1
         [SetUp]
         public void Setup()
         {
-            var client1 = new Client("Braden", "Alsford")
-            {
-                JournalEntries = new List<JournalEntry>
-                {
-                    new JournalEntry(new DateTime(2020, 12, 1), "Braden's first entry")
-                }
-            };
+            var client1 = new Client("Braden", "Alsford");
 
             _clients = new List<Client> { client1 };
             
-            var retriever = new StubRetriever(_clients);
-
+            
+            var journalEntry = new JournalEntry(
+                1,
+                1,
+                new DateTime(2020, 1, 1),
+                "Today I am grateful for...");
+            
+            _journalEntries = new List<JournalEntry>{ journalEntry };
+            
+            
+            var retriever = new StubRetriever(_clients, _journalEntries);
+            
             var clientsService = new ClientService(retriever);
             var journalEntryService = new JournalEntryService(retriever);
-
+            
             var generalClientsController = new GeneralClientsController(clientsService);
             var specificClientsController = new SpecificClientsController(clientsService);
             var generalJournalEntryController = new GeneralJournalEntryController(journalEntryService);
@@ -56,7 +60,7 @@ namespace TestProject1
                 specificClientsController);
             
             _server = new Server(ServerUri, router);
-
+            
             Task.Run(() => _server.Run());
             
             _client = new HttpClient();
@@ -72,13 +76,20 @@ namespace TestProject1
 
         
         [Test]
-        public async Task Server_Can_Get_All_Clients()
+        public void Test()
+        {
+            Assert.True(true);
+        }
+
+        
+        [Test]
+        public void Server_Can_Get_All_Clients()
         {
             var endPoint = ServerUri + "clients/";
             var expectedBody = JsonConvert.SerializeObject(_clients, new JsonApiSerializerSettings());
             
-            var response = await _client.GetAsync(endPoint);
-            var responseBody = await response.Content.ReadAsStringAsync();
+            var response = _client.GetAsync(endPoint).Result;
+            var responseBody = response.Content.ReadAsStringAsync().Result;
             
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             Assert.AreEqual(expectedBody, responseBody);

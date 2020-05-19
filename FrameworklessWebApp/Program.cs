@@ -14,13 +14,12 @@ namespace FrameworklessWebApp
         private const string Port = "8080";
         private static readonly string Uri = $"http://localhost:{Port}/";
 
-        
+
         static async Task Main(string[] args)
         {
-            // var retriever = new StubRetriever(GetStubbedClients());
+            var retriever = new StubRetriever(GetStubbedClients(), GetStubbedJournalEntries());
+            // var retriever = new DynamoRetriever();
 
-            var retriever = new DynamoRetriever();
-            
 
             var clientsService = new ClientService(retriever);
             var journalEntryService = new JournalEntryService(retriever);
@@ -29,32 +28,35 @@ namespace FrameworklessWebApp
             var specificClientsController = new SpecificClientsController(clientsService);
             var generalJournalEntryController = new GeneralJournalEntryController(journalEntryService);
             var specificJournalEntryController = new SpecificJournalEntryController(journalEntryService);
-            
+
 
             var router = new Router(
-                generalJournalEntryController, 
-                specificJournalEntryController, 
+                generalJournalEntryController,
+                specificJournalEntryController,
                 generalClientsController,
                 specificClientsController);
 
             var server = new Server(Uri, router);
 
-            Console.WriteLine($"\n\nServer listening on port: {Port}"); 
+            Console.WriteLine($"\n\nServer listening on port: {Port}");
             await server.Run();
         }
-        
 
         private static List<Client> GetStubbedClients()
         {
-            var client1 = new Client("Braden", "Alsford")
+            return new List<Client>
             {
-                JournalEntries = new List<JournalEntry>
-                {
-                    new JournalEntry(new DateTime(2020, 12, 1), "Braden's first entry")
-                }
+                new Client("John", "Smith")
             };
+        }
 
-            return new List<Client> { client1 };
+
+        private static List<JournalEntry> GetStubbedJournalEntries()
+        {
+            return new List<JournalEntry>
+            {
+                new JournalEntry(1, 0, DateTime.Now, "This is an entry!")
+            };
         }
     }
 }

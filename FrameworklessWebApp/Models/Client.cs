@@ -15,17 +15,13 @@ namespace FrameworklessWebApp.Models
         
         [DynamoDBProperty]
         public string LastName { get; set; }
-        
-        [DynamoDBProperty]
-        public List<JournalEntry> JournalEntries { get; set; }
 
         [JsonConstructor]
-        public Client(int clientId, string firstName, string lastName, List<JournalEntry> journalEntries)
+        public Client(int clientId, string firstName, string lastName)
         {
             FirstName = firstName;
             LastName = lastName;
             ClientID = clientId;
-            JournalEntries = journalEntries;
         }
 
         public Client(string firstName, string lastName)
@@ -43,7 +39,6 @@ namespace FrameworklessWebApp.Models
             return new Client(clientVm.FirstName, clientVm.LastName)
             {
                 ClientID = clientVm.Id,
-                JournalEntries = clientVm.JournalEntries
             };
         }
     }

@@ -87,7 +87,6 @@ namespace FrameworklessWebApp.Data
 
             oldClient.FirstName = newClient.FirstName;
             oldClient.LastName = newClient.LastName;
-            oldClient.JournalEntries = newClient.JournalEntries;
 
             await _context.SaveAsync(oldClient);
         }
