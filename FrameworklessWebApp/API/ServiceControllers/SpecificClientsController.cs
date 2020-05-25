@@ -1,17 +1,15 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using FrameworklessWebApp.Models;
 using FrameworklessWebApp.Services;
 using FrameworklessWebApp.Services.Exceptions;
 using JsonApiSerializer;
-using JsonApiSerializer.JsonApi;
 using Newtonsoft.Json;
 
 namespace FrameworklessWebApp.API.ServiceControllers
 {
-    public class SpecificClientsController
+    public class SpecificClientsController : IController
     {
         private readonly ClientService _clientService;
 

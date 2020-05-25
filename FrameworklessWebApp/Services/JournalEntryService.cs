@@ -32,15 +32,16 @@ namespace FrameworklessWebApp.Services
         }
         
 
-        public string AddEntry(int clientId, JournalEntry journalEntry)
+        public int AddEntry(int clientId, JournalEntry journalEntry)
         {
             var entries = GetEntries(clientId);
-            journalEntry.Id = GetNextId(entries);
+            var newId = GetNextId(entries);
+            journalEntry.Id = newId;
             journalEntry.ClientId = clientId;
             
             _retriever.AddJournalEntryAsync(journalEntry);
 
-            return "ah, maybe finish this..";
+            return newId;
         }
 
 

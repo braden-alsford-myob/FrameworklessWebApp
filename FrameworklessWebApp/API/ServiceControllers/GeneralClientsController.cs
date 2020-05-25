@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 
 namespace FrameworklessWebApp.API.ServiceControllers
 {
-    public class GeneralClientsController
+    public class GeneralClientsController : IController
     {
         private readonly ClientService _clientService;
 
@@ -22,7 +22,7 @@ namespace FrameworklessWebApp.API.ServiceControllers
             _clientService = clientService;
         }
         
-        public Response GetResponse(HttpListenerRequest request)
+        public Response GetResponse(HttpListenerRequest request, string[] parameters)
         {
             try
             {

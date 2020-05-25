@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace FrameworklessWebApp.API.ServiceControllers
 {
-    public class SpecificJournalEntryController
+    public class SpecificJournalEntryController : IController
     {
         private readonly JournalEntryService _journalEntryService;
         

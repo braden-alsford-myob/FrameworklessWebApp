@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace FrameworklessWebApp.API.ServiceControllers
 {
-    public class GeneralJournalEntryController
+    public class GeneralJournalEntryController : IController
     {
         private readonly JournalEntryService _journalEntryService;
 
@@ -41,8 +41,9 @@ namespace FrameworklessWebApp.API.ServiceControllers
                     var newJournalEntry = JournalEntry.ConvertToJournalEntry(newJournalEntryVm);
                     
                     var newId = _journalEntryService.AddEntry(clientId, newJournalEntry);
+                    var responseBody = JsonConvert.SerializeObject(new IdViewModel{Id = newId}, new JsonApiSerializerSettings());
                     
-                    return new Response(201, $"\"Id\" : {newId}");
+                    return new Response(201, responseBody);
             }
 
             return BasicResponseBuilder.GetBadRequest();

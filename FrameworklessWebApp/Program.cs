@@ -15,7 +15,7 @@ namespace FrameworklessWebApp
         private static readonly string Uri = $"http://localhost:{Port}/";
 
 
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             var retriever = new StubRetriever(GetStubbedClients(), GetStubbedJournalEntries());
             // var retriever = new DynamoRetriever();
@@ -39,7 +39,9 @@ namespace FrameworklessWebApp
             var server = new Server(Uri, router);
 
             Console.WriteLine($"\n\nServer listening on port: {Port}");
-            await server.Run();
+            server.Run();
+
+            Console.ReadKey();
         }
 
         private static List<Client> GetStubbedClients()

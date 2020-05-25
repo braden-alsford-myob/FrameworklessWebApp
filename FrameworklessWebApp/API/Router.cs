@@ -46,7 +46,7 @@ namespace FrameworklessWebApp.API
                     return _specificClientsController.GetResponse(request, parameters);
                 }
                 
-                return _generalClientsController.GetResponse(request);
+                return _generalClientsController.GetResponse(request, parameters);
             }
 
             return new Response(400, "Bad Request");
