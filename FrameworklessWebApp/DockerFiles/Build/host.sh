@@ -1,5 +1,3 @@
-dotnet test
-
 dotnet publish -c publish
  
 docker build -t server .
