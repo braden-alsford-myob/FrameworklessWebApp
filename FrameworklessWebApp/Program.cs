@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using FrameworklessWebApp.API;
 using FrameworklessWebApp.API.ServiceControllers;
 using FrameworklessWebApp.Data;
@@ -13,8 +12,8 @@ namespace FrameworklessWebApp
     {
         private const string Port = "8080";
         private static readonly string Uri = $"http://localhost:{Port}/";
-
-
+        
+        
         static void Main(string[] args)
         {
             var retriever = new StubRetriever(GetStubbedClients(), GetStubbedJournalEntries());
@@ -39,6 +38,7 @@ namespace FrameworklessWebApp
             var server = new Server(Uri, router);
 
             Console.WriteLine($"\n\nServer listening on port: {Port}");
+
             server.Run();
 
             Console.ReadKey();

@@ -60,6 +60,8 @@ namespace FrameworklessWebApp.API
                 context.Response.ContentType = "application/vnd.api+json";
                 context.Response.ContentLength64 = responseBuffer.Length;
                 context.Response.OutputStream.Write(responseBuffer, 0, responseBuffer.Length);
+                context.Response.OutputStream.Flush();
+                context.Response.OutputStream.Close();
             });
         }
 

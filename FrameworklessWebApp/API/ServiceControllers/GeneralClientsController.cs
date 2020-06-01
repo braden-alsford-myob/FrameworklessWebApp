@@ -53,7 +53,7 @@ namespace FrameworklessWebApp.API.ServiceControllers
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return new Response(500, "todo");
+                return new Response(400, "todo");
             }
         }
     }

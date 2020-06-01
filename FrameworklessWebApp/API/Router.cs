@@ -73,7 +73,7 @@ namespace FrameworklessWebApp.API
                 return queryParameters;
             }
             
-            var queryParamsPairs = request.Url.Query.Substring(1).Split('&');
+            var queryParamsPairs = request.Url.Query.Substring(1).Split('?');
             
             foreach (var param in queryParamsPairs)
             {
