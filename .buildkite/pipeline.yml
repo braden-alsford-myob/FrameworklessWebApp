@@ -2,17 +2,17 @@ steps:
   - label: "Run tests"
     command: dotnet test
     
-  - label: "Publish files"
-    
-    
-  - label: "Generate Docker image and upload"
-    
-    
-  - label: "Provision aws stack using cloudformation"
-    
-    
-  - label: "Deploy application"
-    
-    
-  - label: "Running integration tests"
-    
+#  - label: "Publish files"
+#    
+#    
+#  - label: "Generate Docker image and upload"
+#    
+#    
+#  - label: "Provision aws stack using cloudformation"
+#    
+#    
+#  - label: "Deploy application"
+#    
+#    
+#  - label: "Running integration tests"
+#    
